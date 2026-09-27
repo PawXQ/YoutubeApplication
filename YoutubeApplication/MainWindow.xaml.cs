@@ -23,6 +23,7 @@ namespace YoutubeApplication
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }
