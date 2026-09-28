@@ -68,7 +68,7 @@
                                     <Image
                                         Height="135"
                                         Margin="0,0,0,8"
-                                        Source="{Binding snippet.thumbnails.medium.url}"
+                                        Source="{Binding videoThumbnails}"
                                         Stretch="UniformToFill" />
 
                                     <!--  影片標題  -->
@@ -77,7 +77,7 @@
                                         Margin="0,0,0,6"
                                         FontSize="14"
                                         FontWeight="Bold"
-                                        Text="{Binding snippet.title}"
+                                        Text="{Binding title}"
                                         TextTrimming="CharacterEllipsis"
                                         TextWrapping="Wrap" />
 
@@ -86,14 +86,14 @@
                                         Margin="0,0,0,2"
                                         FontSize="12"
                                         Foreground="Gray"
-                                        Text="{Binding snippet.channelTitle}"
+                                        Text="{Binding channelTitle}"
                                         TextTrimming="CharacterEllipsis" />
 
                                     <!--  影片 ID 或發布時間  -->
                                     <TextBlock
                                         FontSize="11"
                                         Foreground="#888888"
-                                        Text="{Binding id.videoId}"
+                                        Text="{Binding viewCount}"
                                         TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
                             </Border>

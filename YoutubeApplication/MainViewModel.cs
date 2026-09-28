@@ -12,6 +12,7 @@ using System.Windows.Input;
 using YoutubeApi;
 using YoutubeApi.Interface;
 using YoutubeApi.Model;
+using YoutubeApplication.Models;
 using YoutubeApplication.Presenter;
 using YoutubeApplication.Utility;
 using static YoutubeApplication.Contract.VideoSearchContract;
@@ -25,7 +26,7 @@ namespace YoutubeApplication
         public ICommand ClickCommand { get; set; }
 
         public string SampleText { get; set; }
-        public ObservableCollection<SearchVideo.Item> SearchVideos { get; set; }
+        public ObservableCollection<SearchVideoDTO> SearchVideos { get; set; }
 
         public MainViewModel()
         {
@@ -34,15 +35,14 @@ namespace YoutubeApplication
             this.ClickCommand = new RelayCommand(ClickTask, () => true);
         }
 
-
         public void ClickTask()
         {
             _videoSearchPresenter.VideoSearch(this.SampleText);
         }
 
-        public void RenderVideoSearch(SearchVideo.Item[] searchVideoItem)
+        public void RenderVideoSearch(List<SearchVideoDTO> searchVideoDTOs)
         {
-            this.SearchVideos = new ObservableCollection<SearchVideo.Item>(searchVideoItem);
+            this.SearchVideos = new ObservableCollection<SearchVideoDTO>(searchVideoDTOs);
         }
     }
 }

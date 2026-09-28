@@ -72,6 +72,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contract\VideoSearchContract.cs" />
+    <Compile Include="Models\SearchVideoDTO.cs" />
     <Compile Include="Presenter\VideoSearchPresenter.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
     <Page Include="MainWindow.xaml">
