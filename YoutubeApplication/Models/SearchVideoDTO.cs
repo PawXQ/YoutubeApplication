@@ -14,5 +14,6 @@ namespace YoutubeApplication.Models
         public string videoThumbnails { get; set; }
         public string channelThumbnails { get; set; }
         public string publishedAt { get; set; }
+        public string duration { get; set; }
     }
 }

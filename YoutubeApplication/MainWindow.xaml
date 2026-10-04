@@ -89,11 +89,32 @@
                                         Text="{Binding channelTitle}"
                                         TextTrimming="CharacterEllipsis" />
 
-                                    <!--  影片 ID 或發布時間  -->
+                                    <!--  影片觀看次數  -->
                                     <TextBlock
                                         FontSize="11"
                                         Foreground="#888888"
                                         Text="{Binding viewCount}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <!--  頻道縮圖  -->
+                                    <Image
+                                        Height="135"
+                                        Margin="0,0,0,8"
+                                        Source="{Binding channelThumbnails}"
+                                        Stretch="UniformToFill" />
+
+                                    <!--  影片上傳時間  -->
+                                    <TextBlock
+                                        FontSize="11"
+                                        Foreground="#888888"
+                                        Text="{Binding publishedAt}"
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <!--  影片時長  -->
+                                    <TextBlock
+                                        FontSize="11"
+                                        Foreground="#888888"
+                                        Text="{Binding duration}"
                                         TextTrimming="CharacterEllipsis" />
                                 </StackPanel>
                             </Border>

@@ -11,6 +11,9 @@ using System.Collections.ObjectModel;
 using System.Collections;
 using System.Collections.Concurrent;
 using YoutubeApplication.Models;
+using System.Diagnostics;
+using System.Threading;
+using YoutubeApi.Service;
 
 namespace YoutubeApplication.Presenter
 {
@@ -30,10 +33,15 @@ namespace YoutubeApplication.Presenter
 
         public async Task VideoSearch(string query)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             ResponseResult<SearchVideo> responseResult = await youtubeContext.Search.SearchVideoAsync(query);
 
-            foreach (var item in responseResult.Data.items)
+            List<Task> tasks = responseResult.Data.items.Select(async item =>
             {
+                List<Task> sepItemTask = new List<Task>();
+
                 SearchVideoDTO searchVideoDTO = new SearchVideoDTO();
 
                 searchVideoDTO.title = item.snippet.title;
@@ -44,31 +52,39 @@ namespace YoutubeApplication.Presenter
                 string videoId = item.id.videoId;
                 string channelId = item.snippet.channelId;
 
-                ResponseResult<GetVideoInfo> getVideoInfoResult = await VideoInfoSeardh(videoId);
-                ResponseResult<GetChannelsInfo> getChannelsInfoResult = await ChannelInfoSearch(channelId);
+                Task<ResponseResult<GetVideoInfo>> getVideoInfoResultTask = VideoInfoSeardh(videoId);
+                Task<ResponseResult<GetChannelsInfo>> getChannelsInfoResultTask = ChannelInfoSearch(channelId);
+
+                sepItemTask.Add(getVideoInfoResultTask);
+                sepItemTask.Add(getChannelsInfoResultTask);
+                await Task.WhenAll(sepItemTask);
+
+                ResponseResult<GetVideoInfo> getVideoInfoResult = await getVideoInfoResultTask;
+                ResponseResult<GetChannelsInfo> getChannelsInfoResult = await getChannelsInfoResultTask;
 
                 searchVideoDTO.viewCount = getVideoInfoResult.Data.items[0].statistics.viewCount;
+                searchVideoDTO.duration = getVideoInfoResult.Data.items[0].contentDetails.duration;
                 searchVideoDTO.channelThumbnails = getChannelsInfoResult.Data.items[0].snippet.thumbnails.medium.url;
 
                 searchVideoDTOs.Add(searchVideoDTO);
-            }
+            }).ToList();
 
+            await Task.WhenAll(tasks);
 
             this.RenderVideoSearch();
+
+            sw.Stop();
+            Console.WriteLine($"{sw.ElapsedMilliseconds / 1000.0}s");
         }
 
-        public async Task<ResponseResult<GetVideoInfo>> VideoInfoSeardh(string id)
+        public Task<ResponseResult<GetVideoInfo>> VideoInfoSeardh(string id)
         {
-            ResponseResult<GetVideoInfo> responseResult = await youtubeContext.Video.GetVideoInfoAsync(id);
-
-            return responseResult;
+            return youtubeContext.Video.GetVideoInfoAsync(id); ;
         }
 
-        public async Task<ResponseResult<GetChannelsInfo>> ChannelInfoSearch(string id)
+        public Task<ResponseResult<GetChannelsInfo>> ChannelInfoSearch(string id)
         {
-            ResponseResult<GetChannelsInfo> responseResult = await youtubeContext.Channels.GetChannelsInfoAsync(id);
-
-            return responseResult;
+            return youtubeContext.Channels.GetChannelsInfoAsync(id);
         }
 
         public void RenderVideoSearch()
