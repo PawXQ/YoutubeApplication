@@ -13,7 +13,7 @@ namespace YoutubeApplication.Contract
     {
         internal interface IVideoSearchPresenter
         {
-            Task VideoSearch(string query);
+            Task VideoSearch(string query, string publishedAfter, string videoDuration = "any", string searchType = "any", string VideoDefinition = "any", string VideoType = "any");
             Task<ResponseResult<GetVideoInfo>> VideoInfoSeardh(string id);
             Task<ResponseResult<GetChannelsInfo>> ChannelInfoSearch(string id);
         }

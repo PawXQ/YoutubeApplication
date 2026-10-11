@@ -2,22 +2,31 @@
     x:Class="YoutubeApplication.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:YoutubeApplication.ValueConverter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:filter="clr-namespace:YoutubeApplication.Components.FilterComponent"
     xmlns:local="clr-namespace:YoutubeApplication"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="main"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="1368"
+    Height="817"
+    Background="White"
     mc:Ignorable="d">
 
+    <Window.Resources>
+        <converter:TimeDurationConverter x:Key="TimeDurationConverter" />
+        <converter:PublishedAtConverter x:Key="PublishedAtConverter" />
+    </Window.Resources>
 
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="35*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!--  搜尋列  -->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -27,9 +36,10 @@
             </Grid.ColumnDefinitions>
 
             <TextBox
+                x:Name="SearchBox"
                 Grid.Column="1"
                 Margin="0,0,10,0"
-                Text="{Binding SampleText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                Text="{Binding QueryText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 
             <Button
                 Grid.Column="2"
@@ -38,90 +48,122 @@
                 CommandParameter="{Binding}">
                 Search
             </Button>
+
+            <ToggleButton x:Name="FilterButton" Grid.Column="3">Filter</ToggleButton>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="0,20,0,0">
-            <!--  加入滾動條，避免影片卡片過多時超出畫面  -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding SearchVideos}">
-                    <!--  1. 將項目的排列容器改為 WrapPanel（由左至右，空間不夠自動換行）  -->
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+        <Popup
+            Grid.Row="1"
+            IsOpen="{Binding IsChecked, ElementName=FilterButton}"
+            Placement="Center"
+            PlacementTarget="{Binding ElementName=main}">
 
-                    <!--  2. 每部影片卡片的排版：內部資訊由上往下排  -->
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <!--  卡片外框：設定固定寬度、邊距，內部上下排列  -->
-                            <Border
-                                Width="240"
-                                Margin="10"
-                                Padding="10"
-                                Background="#F9F9F9"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="1"
-                                CornerRadius="8">
-                                <StackPanel Orientation="Vertical">
-                                    <!--  影片縮圖（若有 ImageUrl 可用 Image 控制項）  -->
-                                    <Image
-                                        Height="135"
-                                        Margin="0,0,0,8"
-                                        Source="{Binding videoThumbnails}"
-                                        Stretch="UniformToFill" />
+            <filter:Filter />
+        </Popup>
 
-                                    <!--  影片標題  -->
+
+        <!--  影片清單  -->
+        <ScrollViewer
+            Grid.Row="2"
+            Margin="0,20,0,0"
+            VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SearchVideos}">
+
+                <!--  由左至右排列，空間不夠自動換行  -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!--  單一影片卡片（YouTube 樣式）  -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Width="300" Margin="8,0,8,24">
+
+                            <!--  縮圖（圓角）+ 右下角時長標籤  -->
+                            <Grid Height="169">
+                                <Rectangle RadiusX="12" RadiusY="12">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="{Binding videoThumbnails}" Stretch="UniformToFill" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+
+                                <Border
+                                    Margin="0,0,8,8"
+                                    Padding="5,1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Background="#CC000000"
+                                    CornerRadius="4">
+                                    <TextBlock
+                                        FontSize="12"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="{Binding duration, Converter={StaticResource TimeDurationConverter}}" />
+                                </Border>
+                            </Grid>
+
+                            <!--  下方資訊列：左邊圓形頭像，右邊文字  -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  頻道頭像  -->
+                                <Ellipse
+                                    Grid.Column="0"
+                                    Width="36"
+                                    Height="36"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Top">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding channelThumbnails}" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+
+                                <StackPanel Grid.Column="1">
+                                    <!--  標題（最多兩行）  -->
                                     <TextBlock
                                         MaxHeight="40"
-                                        Margin="0,0,0,6"
                                         FontSize="14"
-                                        FontWeight="Bold"
+                                        FontWeight="SemiBold"
                                         Text="{Binding title}"
                                         TextTrimming="CharacterEllipsis"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        ToolTip="{Binding title}" />
 
                                     <!--  頻道名稱  -->
                                     <TextBlock
-                                        Margin="0,0,0,2"
+                                        Margin="0,4,0,0"
                                         FontSize="12"
-                                        Foreground="Gray"
+                                        Foreground="#606060"
                                         Text="{Binding channelTitle}"
                                         TextTrimming="CharacterEllipsis" />
 
-                                    <!--  影片觀看次數  -->
-                                    <TextBlock
-                                        FontSize="11"
-                                        Foreground="#888888"
-                                        Text="{Binding viewCount}"
-                                        TextTrimming="CharacterEllipsis" />
-
-                                    <!--  頻道縮圖  -->
-                                    <Image
-                                        Height="135"
-                                        Margin="0,0,0,8"
-                                        Source="{Binding channelThumbnails}"
-                                        Stretch="UniformToFill" />
-
-                                    <!--  影片上傳時間  -->
-                                    <TextBlock
-                                        FontSize="11"
-                                        Foreground="#888888"
-                                        Text="{Binding publishedAt}"
-                                        TextTrimming="CharacterEllipsis" />
-
-                                    <!--  影片時長  -->
-                                    <TextBlock
-                                        FontSize="11"
-                                        Foreground="#888888"
-                                        Text="{Binding duration}"
-                                        TextTrimming="CharacterEllipsis" />
+                                    <!--  觀看次數 • 上傳時間  -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="#606060"
+                                            Text="{Binding viewCount}" />
+                                        <TextBlock
+                                            Margin="4,0"
+                                            FontSize="12"
+                                            Foreground="#606060"
+                                            Text="•" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="#606060"
+                                            Text="{Binding publishedAt, Converter={StaticResource PublishedAtConverter}}" />
+                                    </StackPanel>
                                 </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Window>

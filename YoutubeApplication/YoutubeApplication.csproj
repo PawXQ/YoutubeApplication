@@ -71,10 +71,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Components\FilterComponent\Filter.xaml.cs">
+      <DependentUpon>Filter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Contract\VideoSearchContract.cs" />
     <Compile Include="Models\SearchVideoDTO.cs" />
     <Compile Include="Presenter\VideoSearchPresenter.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
+    <Compile Include="ValueConverter\PublishedAtConverter.cs" />
+    <Compile Include="ValueConverter\TimeDurationConverter.cs" />
+    <Page Include="Components\FilterComponent\Filter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -116,6 +125,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.6.4\build\Fody.targets" Condition="Exists('..\packages\Fody.6.6.4\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -37,9 +37,9 @@ namespace YoutubeApplication.Utility
         public event EventHandler CanExecuteChanged;
 
         Action<T> callback;
-        Func<bool, T> canExcute;
+        Func<T, bool> canExcute;
 
-        public RelayCommand(Action<T> callback, Func<bool, T> canExcute = null)
+        public RelayCommand(Action<T> callback, Func<T, bool> canExcute = null)
         {
             this.callback = callback;
             this.canExcute = canExcute;
@@ -48,7 +48,7 @@ namespace YoutubeApplication.Utility
         public bool CanExecute(object parameter)
         {
             if (this.canExcute == null) return false;
-            return this.CanExecute(parameter);
+            return this.canExcute((T)parameter);
         }
 
         public void Execute(object parameter)

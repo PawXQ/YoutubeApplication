@@ -31,9 +31,9 @@ namespace YoutubeApplication.Presenter
             this.youtubeContext = new YoutubeContext();
         }
 
-        public async Task VideoSearch(string query)
+        public async Task VideoSearch(string query, string publishedAfter, string videoDuration = "any", string searchType = "video", string VideoDefinition = "any", string VideoType = "any")
         {
-            ResponseResult<SearchVideo> responseResult = await youtubeContext.Search.SearchVideoAsync(query);
+            ResponseResult<SearchVideo> responseResult = await youtubeContext.Search.SearchVideoAsync(query, publishedAfter, videoDuration, searchType, VideoDefinition, VideoType);
 
             string itemsIdStr = string.Join(",", responseResult.Data.items.Select(x => x.id.videoId));
             string itemsChannelIdStr = string.Join(",", responseResult.Data.items.Select(x => x.snippet.channelId));
@@ -59,9 +59,12 @@ namespace YoutubeApplication.Presenter
                 searchVideoDTO.publishedAt = item.snippet.publishedAt.ToString();
                 searchVideoDTO.videoThumbnails = item.snippet.thumbnails.medium.url;
 
-                searchVideoDTO.viewCount = getVideoInfoResult.Data.items.First(x => x.id == item.id.videoId).statistics.viewCount;
-                searchVideoDTO.duration = getVideoInfoResult.Data.items.First(x => x.id == item.id.videoId).contentDetails.duration;
-                searchVideoDTO.channelThumbnails = getChannelsInfoResult.Data.items.First(x => x.id == item.snippet.channelId).snippet.thumbnails.medium.url;
+                //searchVideoDTO.viewCount = getVideoInfoResult.Data.items.FirstOrDefault(x => x.id == item.id.videoId).statistics.viewCount;
+                searchVideoDTO.viewCount = getVideoInfoResult.Data.items.FirstOrDefault(x => x.id == item.id.videoId)?.statistics?.viewCount ?? "0";
+                //searchVideoDTO.duration = getVideoInfoResult.Data.items.FirstOrDefault(x => x.id == item.id.videoId).contentDetails.duration;
+                searchVideoDTO.duration = getVideoInfoResult.Data.items.FirstOrDefault(x => x.id == item.id.videoId)?.contentDetails?.duration ?? "0";
+                //searchVideoDTO.channelThumbnails = getChannelsInfoResult.Data.items.FirstOrDefault(x => x.id == item.snippet.channelId).snippet.thumbnails.medium.url;
+                searchVideoDTO.channelThumbnails = getChannelsInfoResult.Data.items.FirstOrDefault(x => x.id == item.snippet.channelId)?.snippet?.thumbnails?.medium?.url ?? "0";
 
                 searchVideoDTOs.Add(searchVideoDTO);
             }
