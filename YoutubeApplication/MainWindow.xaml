@@ -56,7 +56,8 @@
             Grid.Row="1"
             IsOpen="{Binding IsChecked, ElementName=FilterButton}"
             Placement="Center"
-            PlacementTarget="{Binding ElementName=main}">
+            PlacementTarget="{Binding ElementName=main}"
+            StaysOpen="False">
 
             <filter:Filter />
         </Popup>
