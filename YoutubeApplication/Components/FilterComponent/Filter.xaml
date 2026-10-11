@@ -8,6 +8,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -19,51 +20,40 @@
 
         <!--  第一個 Column：Type (放在 Grid.Column="0")  -->
         <Grid Grid.Column="0">
+
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--<Border
-     Grid.Row="0"
-     Margin="0,0,10,10"
-     Padding="0,0,0,8"
-     BorderBrush="DarkGray"
-     BorderThickness="0,0,0,1">
-     <TextBlock Foreground="Black" Text="TYPE" />
-            -->
-            <!--  顏色可依你的背景微調  -->
-            <!--
- </Border>-->
+            <Border
+                Grid.Row="0"
+                Margin="0,0,10,10"
+                Padding="0,0,0,8"
+                BorderBrush="DarkGray"
+                BorderThickness="0,0,0,1">
+                <TextBlock Foreground="White" Text="TYPE" />
+                <!--  顏色可依你的背景微調  -->
+            </Border>
 
-            <RadioButton
-                Grid.Row="1"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding SearchTypeCommand}"
-                CommandParameter="channel"
-                Content="channel"
-                GroupName="SearchType" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding SearchTypeItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
 
-            <RadioButton
-                Grid.Row="2"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding SearchTypeCommand}"
-                CommandParameter="playlist"
-                Content="playlist"
-                GroupName="SearchType" />
-
-            <RadioButton
-                Grid.Row="3"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding SearchTypeCommand}"
-                CommandParameter="video"
-                Content="video"
-                GroupName="SearchType" />
+                            <RadioButton
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                Padding="12,4"
+                                Command="{Binding SearchTypeItems}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <!--  第二個 Column：Duration (放在 Grid.Column="1")  -->
@@ -73,22 +63,34 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <RadioButton
+            <Border
                 Grid.Row="0"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding VideoDurationCommand}"
-                CommandParameter="short"
-                Content="short"
-                GroupName="VideoDurationType" />
+                Margin="0,0,10,10"
+                Padding="0,0,0,8"
+                BorderBrush="DarkGray"
+                BorderThickness="0,0,0,1">
+                <TextBlock Foreground="White" Text="VideoDuration" />
+                <!--  顏色可依你的背景微調  -->
+            </Border>
 
-            <RadioButton
-                Grid.Row="1"
-                Padding="12,4"
-                Command="{Binding VideoDurationCommand}"
-                CommandParameter="long"
-                Content="long"
-                GroupName="VideoDurationType" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding VideoDurationItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+
+                            <RadioButton
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                Padding="12,4"
+                                Command="{Binding SearchTypeItems}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <!--  第三個 Column：VideoDeginition (放在 Grid.Column="2")  -->
@@ -98,22 +100,34 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <RadioButton
+            <Border
                 Grid.Row="0"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding VideoDefinitionCommand}"
-                CommandParameter="high"
-                Content="high"
-                GroupName="VideoDefinitionType" />
+                Margin="0,0,10,10"
+                Padding="0,0,0,8"
+                BorderBrush="DarkGray"
+                BorderThickness="0,0,0,1">
+                <TextBlock Foreground="White" Text="VideoDefinition" />
+                <!--  顏色可依你的背景微調  -->
+            </Border>
 
-            <RadioButton
-                Grid.Row="1"
-                Padding="12,4"
-                Command="{Binding VideoDefinitionCommand}"
-                CommandParameter="standard"
-                Content="standard"
-                GroupName="VideoDefinitionType" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding VideoDefinitionItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+
+                            <RadioButton
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                Padding="12,4"
+                                Command="{Binding SearchTypeItems}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <!--  第三個 Column：VideoType (放在 Grid.Column="3")  -->
@@ -123,22 +137,34 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <RadioButton
+            <Border
                 Grid.Row="0"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding VideoTypeCommand}"
-                CommandParameter="episode"
-                Content="episode"
-                GroupName="VideoDefinitionType" />
+                Margin="0,0,10,10"
+                Padding="0,0,0,8"
+                BorderBrush="DarkGray"
+                BorderThickness="0,0,0,1">
+                <TextBlock Foreground="White" Text="VideoType" />
+                <!--  顏色可依你的背景微調  -->
+            </Border>
 
-            <RadioButton
-                Grid.Row="1"
-                Padding="12,4"
-                Command="{Binding VideoTypeCommand}"
-                CommandParameter="movie"
-                Content="movie"
-                GroupName="VideoDefinitionType" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding VideoTypeItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+
+                            <RadioButton
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                Padding="12,4"
+                                Command="{Binding SearchTypeItems}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
 
         <!--  第五個 Column：Upload Date (放在 Grid.Column="4")  -->
@@ -146,34 +172,36 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <RadioButton
+            <Border
                 Grid.Row="0"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding PublishedAfterCommand}"
-                CommandParameter="today"
-                Content="today"
-                GroupName="PublishedAfterType" />
+                Margin="0,0,10,10"
+                Padding="0,0,0,8"
+                BorderBrush="DarkGray"
+                BorderThickness="0,0,0,1">
+                <TextBlock Foreground="White" Text="PublishedAfter" />
+                <!--  顏色可依你的背景微調  -->
+            </Border>
 
-            <RadioButton
-                Grid.Row="1"
-                Margin="0,0,0,10"
-                Padding="12,4"
-                Command="{Binding PublishedAfterCommand}"
-                CommandParameter="this_week"
-                Content="this week"
-                GroupName="PublishedAfterType" />
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding PublishedAfterItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
 
-            <RadioButton
-                Grid.Row="2"
-                Padding="12,4"
-                Command="{Binding PublishedAfterCommand}"
-                CommandParameter="this_month"
-                Content="this month"
-                GroupName="PublishedAfterType" />
+                            <RadioButton
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                Padding="12,4"
+                                Command="{Binding SearchTypeItems}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>

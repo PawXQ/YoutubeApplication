@@ -23,6 +23,7 @@ namespace YoutubeApplication.Components.FilterComponent
         public Filter()
         {
             InitializeComponent();
+            DataContext = new FilterContext();
         }
     }
 }

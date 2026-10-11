@@ -74,7 +74,9 @@
     <Compile Include="Components\FilterComponent\Filter.xaml.cs">
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\FilterComponent\FilterContext.cs" />
     <Compile Include="Contract\VideoSearchContract.cs" />
+    <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Models\SearchVideoDTO.cs" />
     <Compile Include="Presenter\VideoSearchPresenter.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
