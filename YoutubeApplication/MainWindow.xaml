@@ -59,7 +59,7 @@
             PlacementTarget="{Binding ElementName=main}"
             StaysOpen="False">
 
-            <filter:Filter />
+            <filter:Filter GetConfirmFilterCommand="{Binding DataContext.GetConfirmFilterCommand,RelativeSource={RelativeSource AncestorType=Window}}" />
         </Popup>
 
 

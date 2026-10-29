@@ -25,5 +25,26 @@ namespace YoutubeApplication.Components.FilterComponent
             InitializeComponent();
             DataContext = new FilterContext();
         }
+
+        public static readonly DependencyProperty GetConfirmFilterCommandProperty = DependencyProperty.Register(
+        nameof(GetConfirmFilterCommand),
+        typeof(ICommand),
+        typeof(Filter),
+        new PropertyMetadata(default(ICommand), GetConfirmFilterCommandChanged, CoerceGetConfirmFilterCommand));
+        public ICommand GetConfirmFilterCommand
+        {
+            get => (ICommand)GetValue(GetConfirmFilterCommandProperty);
+            set => SetValue(GetConfirmFilterCommandProperty, value);
+        }
+        private static void GetConfirmFilterCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Filter panel = d as Filter;
+            FilterContext filterContext = panel.DataContext as FilterContext;
+            filterContext.GetConfirmFilterCommand = e.NewValue as ICommand;
+        }
+        private static object CoerceGetConfirmFilterCommand(DependencyObject d, object baseValue)
+        {
+            return baseValue;
+        }
     }
 }
