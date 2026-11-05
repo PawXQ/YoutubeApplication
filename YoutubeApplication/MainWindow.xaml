@@ -9,8 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="main"
     Title="MainWindow"
-    Width="1368"
-    Height="817"
+    Width="1000"
+    Height="600"
     Background="White"
     mc:Ignorable="d">
 
@@ -22,8 +22,8 @@
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!--  搜尋列  -->
@@ -59,13 +59,13 @@
             PlacementTarget="{Binding ElementName=main}"
             StaysOpen="False">
 
-            <filter:Filter GetConfirmFilterCommand="{Binding DataContext.GetConfirmFilterCommand,RelativeSource={RelativeSource AncestorType=Window}}" />
+            <filter:Filter GetConfirmFilterCommand="{Binding DataContext.GetConfirmFilterCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
         </Popup>
 
 
         <!--  影片清單  -->
         <ScrollViewer
-            Grid.Row="2"
+            Grid.Row="1"
             Margin="0,20,0,0"
             VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding SearchVideos}">
@@ -166,5 +166,48 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+
+                <Button
+                    Width="20"
+                    Command="{Binding ChangePageIndexCommand}"
+                    CommandParameter="lt"
+                    Content="&lt;" />
+
+                <ItemsControl ItemsSource="{Binding PageIndices}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton
+                                Width="20"
+                                Command="{Binding DataContext.ChangePageIndexCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding Title}"
+                                Content="{Binding Title}"
+                                GroupName="{Binding GroupName}"
+                                IsChecked="{Binding IsChecked}"
+                                Style="{StaticResource {x:Type ToggleButton}}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button
+                    Width="20"
+                    Command="{Binding ChangePageIndexCommand}"
+                    CommandParameter="gt"
+                    Content="&gt;" />
+
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
