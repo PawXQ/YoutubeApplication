@@ -39,7 +39,7 @@ namespace YoutubeApplication.Components.FilterComponent
                     string filterPropertyName = propertyInfo.Name.Replace("Items", "");
 
                     PropertyInfo filterProperty = filter.GetType().GetProperty(filterPropertyName);
-                    filterProperty.SetValue(filter, item.IsChecked ? item.Title : null);
+                    if (item.IsChecked) filterProperty.SetValue(filter, item.Title);
                     if (filterProperty.GetValue(filter) != null) break;
                 }
             }

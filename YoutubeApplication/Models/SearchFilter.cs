@@ -8,11 +8,11 @@ namespace YoutubeApplication.Models
 {
     internal class SearchFilter
     {
-        public string SearchType { get; set; }
-        public string VideoDuration { get; set; }
-        public string VideoDefinition { get; set; }
-        public string VideoType { get; set; }
-        private string _publishedAfter;
+        public string SearchType { get; set; } = "video";
+        public string VideoDuration { get; set; } = "any";
+        public string VideoDefinition { get; set; } = "any";
+        public string VideoType { get; set; } = "any";
+        private string _publishedAfter = "1970-01-01T00:00:00Z";
         public string PublishedAfter
         {
             get => _publishedAfter;

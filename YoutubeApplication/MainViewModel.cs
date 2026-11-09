@@ -27,13 +27,11 @@ namespace YoutubeApplication
         public ICommand GetConfirmFilterCommand { get; set; }
 
         public string QueryText { get; set; }
-        public string SearchType { get; set; } = "video";
-        public string VideoDuration { get; set; } = "any";
-        public string VideoDefinition { get; set; } = "any";
-        public string VideoType { get; set; } = "any";
-        public string PublishedAfter { get; set; }
 
-        public SearchFilter SearchFilter { get; set; }
+        public int TotalPageCount { get; set; }
+        public int CountPerPage { get; set; } = 10;
+
+        public SearchFilter SearchFilter { get; set; } = new SearchFilter();
 
         public ObservableCollection<SearchVideoDTO> SearchVideos { get; set; }
 
@@ -53,17 +51,13 @@ namespace YoutubeApplication
 
         public void ClickTask()
         {
-
-            //_videoSearchPresenter.VideoSearch(this.QueryText, this.PublishedAfter, this.VideoDuration, this.SearchType, this.VideoDefinition, this.VideoType);
-
-
             _videoSearchPresenter.VideoSearch(
                  this.QueryText,
-                 this.SearchFilter.PublishedAfter ?? this.PublishedAfter,
-                 this.SearchFilter.VideoDuration ?? this.VideoDuration,
-                 this.SearchFilter.SearchType ?? this.SearchType,
-                 this.SearchFilter.VideoDefinition ?? this.VideoDefinition,
-                 this.SearchFilter.VideoType ?? this.VideoType
+                 this.SearchFilter.PublishedAfter,
+                 this.SearchFilter.VideoDuration,
+                 this.SearchFilter.SearchType,
+                 this.SearchFilter.VideoDefinition,
+                 this.SearchFilter.VideoType
              );
         }
 
@@ -75,6 +69,7 @@ namespace YoutubeApplication
         public void RenderVideoSearch(List<SearchVideoDTO> searchVideoDTOs)
         {
             this.SearchVideos = new ObservableCollection<SearchVideoDTO>(searchVideoDTOs);
+            this.TotalPageCount = searchVideoDTOs.Count;
         }
     }
 }

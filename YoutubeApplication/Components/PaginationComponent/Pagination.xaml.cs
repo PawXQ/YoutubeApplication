@@ -24,7 +24,7 @@ namespace YoutubeApplication.Components.PaginationComponent
         public Pagination()
         {
             InitializeComponent();
-            DataContext = new PaginationContext();
+            this.DataContext = new PaginationContext();
         }
 
         public static readonly DependencyProperty TotalPageCountProperty = DependencyProperty.Register(
@@ -41,7 +41,7 @@ namespace YoutubeApplication.Components.PaginationComponent
         {
             Pagination pagination = (Pagination)d;
             PaginationContext paginationContext = pagination.DataContext as PaginationContext;
-            paginationContext.TotalPageCount = pagination.TotalPageCount;
+            paginationContext.TotalPageCount2 = pagination.TotalPageCount;
 
         }
         private static object CoerceTotalPageCount(DependencyObject d, object baseValue)
@@ -62,7 +62,7 @@ namespace YoutubeApplication.Components.PaginationComponent
         private static void OnCountPerPageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Pagination pagination = (Pagination)d;
-            PaginationContext paginationContext = pagination.DataContext as PaginationContext;
+            PaginationContext paginationContext = pagination.pagination.DataContext as PaginationContext;
             paginationContext.CountPerPage = pagination.CountPerPage;
         }
         private static object CoerceCountPerPage(DependencyObject d, object baseValue)

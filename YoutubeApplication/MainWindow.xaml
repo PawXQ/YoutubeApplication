@@ -170,7 +170,8 @@
 
         <Grid Grid.Row="2">
 
-            <pagination:Pagination CountPerPage="10" TotalPageCount="21" />
+            <!--<pagination:Pagination CountPerPage="10" TotalPageCount="21" />-->
+            <pagination:Pagination CountPerPage="{Binding DataContext.CountPerPage, RelativeSource={RelativeSource AncestorType=Window}}" TotalPageCount="{Binding DataContext.TotalPageCount, RelativeSource={RelativeSource AncestorType=Window}}" />
 
         </Grid>
     </Grid>
