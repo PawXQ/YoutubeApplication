@@ -20,7 +20,7 @@ namespace YoutubeApplication.Components.PaginationComponent
         public ObservableCollection<PageIndexItem> Pages { get; set; } = new ObservableCollection<PageIndexItem>();
 
         private int _totalPageCount;
-        public int TotalPageCount2
+        public int TotalPageCount
         {
             get => _totalPageCount;
             set
