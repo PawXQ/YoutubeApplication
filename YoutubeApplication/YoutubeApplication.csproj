@@ -75,6 +75,12 @@
       <DependentUpon>Filter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\FilterComponent\FilterContext.cs" />
+    <Compile Include="Components\PaginationComponent\Pagination.xaml.cs">
+      <DependentUpon>Pagination.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\PaginationComponent\PaginationContext.cs" />
+    <Compile Include="Components\PaginationComponent\PaginationContract.cs" />
+    <Compile Include="Components\PaginationComponent\PaginationPresenter.cs" />
     <Compile Include="Contract\VideoSearchContract.cs" />
     <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Models\PageIndexItem.cs" />
@@ -85,6 +91,10 @@
     <Compile Include="ValueConverter\PublishedAtConverter.cs" />
     <Compile Include="ValueConverter\TimeDurationConverter.cs" />
     <Page Include="Components\FilterComponent\Filter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\PaginationComponent\Pagination.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

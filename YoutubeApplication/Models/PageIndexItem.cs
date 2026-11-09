@@ -12,7 +12,6 @@ namespace YoutubeApplication.Models
     {
         public bool IsChecked { get; set; }
         public string Title { get; set; }
-        public string GroupName { get; set; } = "Index";
 
         public PageIndexItem(string title) { this.Title = title; }
     }

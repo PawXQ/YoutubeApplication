@@ -7,6 +7,7 @@
     xmlns:filter="clr-namespace:YoutubeApplication.Components.FilterComponent"
     xmlns:local="clr-namespace:YoutubeApplication"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pagination="clr-namespace:YoutubeApplication.Components.PaginationComponent"
     x:Name="main"
     Title="MainWindow"
     Width="1000"
@@ -168,46 +169,9 @@
         </ScrollViewer>
 
         <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
 
-                <Button
-                    Width="20"
-                    Command="{Binding ChangePageIndexCommand}"
-                    CommandParameter="lt"
-                    Content="&lt;" />
+            <pagination:Pagination CountPerPage="10" TotalPageCount="21" />
 
-                <ItemsControl ItemsSource="{Binding PageIndices}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <RadioButton
-                                Width="20"
-                                Command="{Binding DataContext.ChangePageIndexCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding Title}"
-                                Content="{Binding Title}"
-                                GroupName="{Binding GroupName}"
-                                IsChecked="{Binding IsChecked}"
-                                Style="{StaticResource {x:Type ToggleButton}}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <Button
-                    Width="20"
-                    Command="{Binding ChangePageIndexCommand}"
-                    CommandParameter="gt"
-                    Content="&gt;" />
-
-            </StackPanel>
         </Grid>
     </Grid>
 </Window>
