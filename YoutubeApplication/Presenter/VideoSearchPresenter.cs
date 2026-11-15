@@ -50,6 +50,8 @@ namespace YoutubeApplication.Presenter
             ResponseResult<GetVideoInfo> getVideoInfoResult = await getVideoInfoResultTask;
             ResponseResult<GetChannelsInfo> getChannelsInfoResult = await getChannelsInfoResultTask;
 
+            searchVideoDTOs = new ConcurrentBag<SearchVideoDTO>();
+
             foreach (var item in responseResult.Data.items)
             {
                 SearchVideoDTO searchVideoDTO = new SearchVideoDTO();

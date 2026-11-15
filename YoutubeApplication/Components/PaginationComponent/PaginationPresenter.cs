@@ -13,18 +13,25 @@ namespace YoutubeApplication.Components.PaginationComponent
         IPaginationContext _paginationContext;
         List<PageIndexItem> _pageIndexItems = new List<PageIndexItem>();
 
-        int _totalPageCount = 0;
-        int _countPerPage = 0;
+        int _totalItemsCount = 0; // 總資料 item 數量 (由外部傳入)
+        int _countPerPage = 0;    // 每頁顯示的資料 item 數量 (由外部傳入)
+        int _pagesPerBlock = 3;   // 下方每個 Block 顯示幾個頁碼按鈕 (可依需求改為固定值如 5、10，或於 SetCountPerPage 中同步設定)
+
         int _currentPaginationBlock = 1;
-        int _totalPage => (_countPerPage > 0) ? (_totalPageCount + _countPerPage - 1) / _countPerPage : 0;
-        int _reminderPage => this._totalPageCount % _countPerPage == 0 ? 0 : this._totalPageCount % _countPerPage;
+
+        // 1. 總頁數 = 總資料筆數 / 每頁資料筆數 (無條件進位)
+        int _totalPageCount => (_countPerPage > 0 && _totalItemsCount > 0)
+            ? (_totalItemsCount + _countPerPage - 1) / _countPerPage
+            : 0;
+
+        // 2. 總 Block 數 = 總頁數 / 每個 Block 顯示的頁碼數量 (無條件進位)
+        int _totalBlockCount => (_pagesPerBlock > 0 && _totalPageCount > 0)
+            ? (_totalPageCount + _pagesPerBlock - 1) / _pagesPerBlock
+            : 0;
 
         public PaginationPresenter(IPaginationContext paginationContext)
         {
             this._paginationContext = paginationContext;
-
-            //this._totalPage = this._totalPageCount % this._countPerPage == 0 ? this._totalPageCount / this._countPerPage : (this._totalPageCount / this._countPerPage) + 1;
-            //this._reminderPage = this._totalPageCount % _countPerPage == 0 ? 0 : this._totalPageCount % _countPerPage;
         }
 
         public void RenderPage(int num)
@@ -34,7 +41,9 @@ namespace YoutubeApplication.Components.PaginationComponent
 
             if (num == -1)
             {
-                this._renderPages(start, end, this._countPerPage - 1);
+                // 往回切一個 Block 時，選中該 Block 的最後一個頁碼
+                int lastIndexInBlock = end - start;
+                this._renderPages(start, end, lastIndexInBlock);
                 return;
             }
             this._renderPages(start, end);
@@ -42,39 +51,30 @@ namespace YoutubeApplication.Components.PaginationComponent
 
         private (int, int) _calculatePageRender(int num)
         {
-            int start = 0;
-            int end = 0;
-            if (num == 0)
-            {
-                start = this._currentPaginationBlock * this._countPerPage + 1 - this._countPerPage;
-                end = start + this._countPerPage < this._totalPageCount ? start + this._countPerPage - 1 : start + this._reminderPage - 1;
-            }
-            else if (num == 1)
-            {
-                if (this._currentPaginationBlock + 1 > this._totalPage)
-                {
-                    start = -1;
-                    end = -1;
-                    return (start, end);
-                };
+            if (this._totalPageCount == 0) return (-1, -1);
 
-                start = (this._currentPaginationBlock + 1) * this._countPerPage + 1 - this._countPerPage;
-                end = start + this._countPerPage - 1 <= this._totalPageCount ? start + this._countPerPage - 1 : start + this._reminderPage - 1;
+            if (num == 1)
+            {
+                // 檢查是否已經是最後一個 Block
+                if (this._currentPaginationBlock + 1 > this._totalBlockCount)
+                {
+                    return (-1, -1);
+                }
                 this._currentPaginationBlock++;
             }
             else if (num == -1)
             {
-                if (this._currentPaginationBlock - 1 == 0)
+                // 檢查是否已經是第一個 Block
+                if (this._currentPaginationBlock - 1 <= 0)
                 {
-                    start = -1;
-                    end = -1;
-                    return (start, end);
-                };
-
-                start = (this._currentPaginationBlock - 1) * this._countPerPage + 1 - this._countPerPage;
-                end = start + this._countPerPage - 1;
+                    return (-1, -1);
+                }
                 this._currentPaginationBlock--;
             }
+
+            // 計算當前 Block 的起始頁碼與結束頁碼
+            int start = (this._currentPaginationBlock - 1) * this._pagesPerBlock + 1;
+            int end = Math.Min(start + this._pagesPerBlock - 1, this._totalPageCount);
 
             return (start, end);
         }
@@ -87,7 +87,12 @@ namespace YoutubeApplication.Components.PaginationComponent
                 PageIndexItem pageIndexItem = new PageIndexItem(i.ToString());
                 _pageIndexItems.Add(pageIndexItem);
             }
-            _pageIndexItems[index].IsChecked = true;
+
+            if (_pageIndexItems.Count > 0 && index >= 0 && index < _pageIndexItems.Count)
+            {
+                _pageIndexItems[index].IsChecked = true;
+            }
+
             _paginationContext.RenderPages(this._pageIndexItems);
         }
 
@@ -98,6 +103,7 @@ namespace YoutubeApplication.Components.PaginationComponent
                 item.IsChecked = false;
             }
             this._pageIndexItems.First(x => x.Title == title).IsChecked = true;
+            _paginationContext.SelectedPageTitleCommand.Execute(title);
         }
 
         public void ChangePage(string str)
@@ -107,9 +113,13 @@ namespace YoutubeApplication.Components.PaginationComponent
                 int _currentPageIndex = this._pageIndexItems.FindIndex(x => x.IsChecked == true);
 
                 int _nextPageIndex = _currentPageIndex - 1;
-                if (_nextPageIndex < 0) { this.RenderPage(-1); return; };
+                if (_nextPageIndex < 0)
+                {
+                    this.RenderPage(-1);
+                    return;
+                }
 
-                string title = this._pageIndexItems[_currentPageIndex - 1].Title;
+                string title = this._pageIndexItems[_nextPageIndex].Title;
                 this.SelectPage(title);
             }
             else if (str == "Forward")
@@ -117,28 +127,34 @@ namespace YoutubeApplication.Components.PaginationComponent
                 int _currentPageIndex = this._pageIndexItems.FindIndex(x => x.IsChecked == true);
 
                 int _nextPageIndex = _currentPageIndex + 1;
-                if (_nextPageIndex > this._pageIndexItems.Count - 1) { this.RenderPage(1); return; };
+                if (_nextPageIndex > this._pageIndexItems.Count - 1)
+                {
+                    this.RenderPage(1);
+                    return;
+                }
 
-                string title = this._pageIndexItems[_currentPageIndex + 1].Title;
+                string title = this._pageIndexItems[_nextPageIndex].Title;
                 this.SelectPage(title);
             }
         }
 
-        public void SetTotalPageCount(int totalPageCount)
+        public void SetTotalPageCount(int totalItemsCount)
         {
-            this._totalPageCount = totalPageCount;
+            this._totalItemsCount = totalItemsCount;
+            this._currentPaginationBlock = 1; // 重新設定總筆數時重置回第一個 Block
             this.TryRenderInitialPage();
         }
 
         public void SetCountPerPage(int countPerPage)
         {
             this._countPerPage = countPerPage;
+            this._currentPaginationBlock = 1;
             this.TryRenderInitialPage();
         }
 
         private void TryRenderInitialPage()
         {
-            if (this._totalPageCount > 0 && this._countPerPage > 0)
+            if (this._totalItemsCount > 0 && this._countPerPage > 0)
             {
                 this.RenderPage(0);
             }

@@ -27,24 +27,23 @@ namespace YoutubeApplication.Components.PaginationComponent
             this.DataContext = new PaginationContext();
         }
 
-        public static readonly DependencyProperty TotalPageCountProperty = DependencyProperty.Register(
-        nameof(TotalPageCount),
+        public static readonly DependencyProperty TotalItemsCountProperty = DependencyProperty.Register(
+        nameof(TotalItemsCount),
         typeof(int),
         typeof(Pagination),
-        new PropertyMetadata(default(int), OnTotalPageCountChanged, CoerceTotalPageCount));
-        public int TotalPageCount
+        new PropertyMetadata(default(int), OnTotalItemsCountChanged, CoerceTotalItemsCount));
+        public int TotalItemsCount
         {
-            get => (int)GetValue(TotalPageCountProperty);
-            set => SetValue(TotalPageCountProperty, value);
+            get => (int)GetValue(TotalItemsCountProperty);
+            set => SetValue(TotalItemsCountProperty, value);
         }
-        private static void OnTotalPageCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnTotalItemsCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Pagination pagination = (Pagination)d;
             PaginationContext paginationContext = pagination.DataContext as PaginationContext;
-            paginationContext.TotalPageCount2 = pagination.TotalPageCount;
-
+            paginationContext.TotalItemsCount = pagination.TotalItemsCount;
         }
-        private static object CoerceTotalPageCount(DependencyObject d, object baseValue)
+        private static object CoerceTotalItemsCount(DependencyObject d, object baseValue)
         {
             return baseValue;
         }
@@ -66,6 +65,27 @@ namespace YoutubeApplication.Components.PaginationComponent
             paginationContext.CountPerPage = pagination.CountPerPage;
         }
         private static object CoerceCountPerPage(DependencyObject d, object baseValue)
+        {
+            return baseValue;
+        }
+
+        public static readonly DependencyProperty SelectedPageTitleCommandProperty = DependencyProperty.Register(
+        nameof(SelectedPageTitleCommand),
+        typeof(ICommand),
+        typeof(Pagination),
+        new PropertyMetadata(default(ICommand), OnSelectedPageTitleCommandChanged, CoerceSelectedPageTitleCommandCommand));
+        public ICommand SelectedPageTitleCommand
+        {
+            get => (ICommand)GetValue(SelectedPageTitleCommandProperty);
+            set => SetValue(SelectedPageTitleCommandProperty, value);
+        }
+        private static void OnSelectedPageTitleCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Pagination pagination = (Pagination)d;
+            PaginationContext paginationContext = pagination.DataContext as PaginationContext;
+            paginationContext.SelectedPageTitleCommand = pagination.SelectedPageTitleCommand;
+        }
+        private static object CoerceSelectedPageTitleCommandCommand(DependencyObject d, object baseValue)
         {
             return baseValue;
         }

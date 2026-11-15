@@ -25,15 +25,20 @@ namespace YoutubeApplication
         IVideoSearchPresenter _videoSearchPresenter;
         public ICommand ClickCommand { get; set; }
         public ICommand GetConfirmFilterCommand { get; set; }
+        public ICommand SelectedPageTitleCommand { get; set; }
 
         public string QueryText { get; set; }
 
-        public int TotalPageCount { get; set; }
-        public int CountPerPage { get; set; } = 10;
+        public int TotalItemsCount { get; set; }  // 總資料筆數
+        public int CountPerPage { get; set; } = 11;  // 每頁資料筆數
+
+        private string _selectedPageTitle = "1";
+
 
         public SearchFilter SearchFilter { get; set; } = new SearchFilter();
 
-        public ObservableCollection<SearchVideoDTO> SearchVideos { get; set; }
+        public ObservableCollection<SearchVideoDTO> RenderSearchVideos { get; set; }
+        private List<SearchVideoDTO> TotalSearchVideoDTOs { get; set; }
 
         public ObservableCollection<PageIndexItem> PageIndices { get; set; } = new ObservableCollection<PageIndexItem>() { };
 
@@ -46,6 +51,16 @@ namespace YoutubeApplication
             this.GetConfirmFilterCommand = new RelayCommand<SearchFilter>((x) =>
             {
                 this.SearchFilter = x;
+            }, (x) => true);
+
+            this.SelectedPageTitleCommand = new RelayCommand<string>((x) =>
+            {
+                this._selectedPageTitle = x;
+
+                int pageTitleNum = int.TryParse(this._selectedPageTitle, out int size) ? size : 10;
+                List<SearchVideoDTO> CalculateSearchVideoDTOs = TotalSearchVideoDTOs.Skip((pageTitleNum - 1) * CountPerPage).Take(CountPerPage).ToList();
+                this.RenderSearchVideos = new ObservableCollection<SearchVideoDTO>(CalculateSearchVideoDTOs);
+
             }, (x) => true);
         }
 
@@ -68,8 +83,14 @@ namespace YoutubeApplication
 
         public void RenderVideoSearch(List<SearchVideoDTO> searchVideoDTOs)
         {
-            this.SearchVideos = new ObservableCollection<SearchVideoDTO>(searchVideoDTOs);
-            this.TotalPageCount = searchVideoDTOs.Count;
+            this.TotalSearchVideoDTOs = searchVideoDTOs;
+
+            int pageTitleNum = int.TryParse(this._selectedPageTitle, out int size) ? size : 10;
+            List<SearchVideoDTO> CalculateSearchVideoDTOs = TotalSearchVideoDTOs.Skip((pageTitleNum - 1) * CountPerPage).Take(CountPerPage).ToList();
+            this.RenderSearchVideos = new ObservableCollection<SearchVideoDTO>(CalculateSearchVideoDTOs);
+
+
+            this.TotalItemsCount = searchVideoDTOs.Count;
         }
     }
 }

@@ -19,13 +19,13 @@ namespace YoutubeApplication.Components.PaginationComponent
         IPaginationPresenter _paginationPresenter;
         public ObservableCollection<PageIndexItem> Pages { get; set; } = new ObservableCollection<PageIndexItem>();
 
-        private int _totalPageCount;
-        public int TotalPageCount
+        private int _totalItemsCount;
+        public int TotalItemsCount
         {
-            get => _totalPageCount;
+            get => _totalItemsCount;
             set
             {
-                _totalPageCount = value;
+                _totalItemsCount = value;
                 _paginationPresenter.SetTotalPageCount(value);
             }
         }
@@ -37,6 +37,16 @@ namespace YoutubeApplication.Components.PaginationComponent
             {
                 _countPerPage = value;
                 _paginationPresenter.SetCountPerPage(value);
+            }
+        }
+
+        private ICommand _selectedPageTitleCommand;
+        public ICommand SelectedPageTitleCommand
+        {
+            get => _selectedPageTitleCommand;
+            set
+            {
+                _selectedPageTitleCommand = value;
             }
         }
 
