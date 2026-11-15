@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="YoutubeApplication.Components.PaginationComponent.Pagination"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,53 +8,103 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Name="pagination" HorizontalAlignment="Center">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Button
-            Grid.Column="0"
-            Width="20"
-            Command="{Binding ChangePageCommand}"
-            CommandParameter="Backward"
-            Content="&lt;" />
 
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Pages}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button
-                        Width="20"
-                        Command="{Binding DataContext.SelectPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                        CommandParameter="{Binding}"
-                        Content="{Binding Title}">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsChecked}" Value="True">
-                                        <Setter Property="Background" Value="LightBlue" />
-                                        <Setter Property="Foreground" Value="White" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+    <UserControl.Resources>
+        <!--  頁碼按鈕：一般為透明，滑過銀白光暈，選中為鈦銀金屬  -->
+        <Style x:Key="PageNumberButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Padding="{TemplateBinding Padding}"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="1"
+                            CornerRadius="17"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHoverBrush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource HighlightBorderBrush}" />
+                                <Setter TargetName="Bd" Property="Effect" Value="{StaticResource HoverGlow}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                            </Trigger>
+                            <!--  選中頁（放最後，優先於 Hover）  -->
+                            <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#80FFFFFF" />
+                                <Setter TargetName="Bd" Property="Effect" Value="{StaticResource HoverGlow}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextDarkBrush}" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
-        <Button
-            Grid.Column="2"
-            Width="20"
-            Command="{Binding ChangePageCommand}"
-            CommandParameter="Forward"
-            Content="&gt;" />
+    <Border
+        Margin="0,16,0,0"
+        Padding="6"
+        HorizontalAlignment="Center"
+        CornerRadius="24"
+        Style="{StaticResource Panel}">
+        <Grid Name="pagination">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-    </Grid>
+            <Button
+                Grid.Column="0"
+                Margin="0,0,6,0"
+                Command="{Binding ChangePageCommand}"
+                CommandParameter="Backward"
+                Content="&#xE76B;"
+                Style="{StaticResource IconButton}"
+                ToolTip="上一頁" />
+
+            <ItemsControl
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding Pages}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Command="{Binding DataContext.SelectPageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Content="{Binding Title}"
+                            Style="{StaticResource PageNumberButtonStyle}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button
+                Grid.Column="2"
+                Margin="6,0,0,0"
+                Command="{Binding ChangePageCommand}"
+                CommandParameter="Forward"
+                Content="&#xE76C;"
+                Style="{StaticResource IconButton}"
+                ToolTip="下一頁" />
+        </Grid>
+    </Border>
 </UserControl>
