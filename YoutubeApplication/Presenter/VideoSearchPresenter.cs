@@ -23,6 +23,7 @@ namespace YoutubeApplication.Presenter
         YoutubeContext youtubeContext;
 
         private ConcurrentBag<SearchVideoDTO> searchVideoDTOs = new ConcurrentBag<SearchVideoDTO>();
+        private ConcurrentBag<PlayListDTO> playListDTOs = new ConcurrentBag<PlayListDTO>();
 
         public VideoSearchPresenter(IVideoSearchView videoSearchView)
         {
@@ -87,6 +88,25 @@ namespace YoutubeApplication.Presenter
         public void RenderVideoSearch()
         {
             this._videoSearchView.RenderVideoSearch(searchVideoDTOs.ToList());
+        }
+
+        public async Task GetOwnPlayList()
+        {
+            ResponseResult<GetPlayList> responseResult = await youtubeContext.PlayList.GetPlayListAsync();
+            playListDTOs = new ConcurrentBag<PlayListDTO>();
+
+            foreach (var item in responseResult.Data.items)
+            {
+                PlayListDTO playListDTO = new PlayListDTO();
+
+                playListDTO.PlaylistId = item.id;
+                playListDTO.Title = item.snippet.title;
+                playListDTO.Thumbnails = item.snippet.thumbnails.medium.url;
+
+                playListDTOs.Add(playListDTO);
+            }
+
+            this._videoSearchView.RenderOwnPlayList(playListDTOs.ToList());
         }
     }
 }

@@ -26,6 +26,8 @@ namespace YoutubeApplication
         public ICommand ClickCommand { get; set; }
         public ICommand GetConfirmFilterCommand { get; set; }
         public ICommand SelectedPageTitleCommand { get; set; }
+        public ICommand GetPlayListsCommand { get; set; }
+        public ICommand AddVideoItemPlayListCommand { get; set; }
 
         public string QueryText { get; set; }
 
@@ -40,7 +42,7 @@ namespace YoutubeApplication
         public ObservableCollection<SearchVideoDTO> RenderSearchVideos { get; set; }
         private List<SearchVideoDTO> TotalSearchVideoDTOs { get; set; }
 
-        public ObservableCollection<PageIndexItem> PageIndices { get; set; } = new ObservableCollection<PageIndexItem>() { };
+        public ObservableCollection<PlayListDTO> PlayListDTOs { get; set; }
 
         public MainViewModel()
         {
@@ -62,6 +64,8 @@ namespace YoutubeApplication
                 this.RenderSearchVideos = new ObservableCollection<SearchVideoDTO>(CalculateSearchVideoDTOs);
 
             }, (x) => true);
+
+            this.GetPlayListsCommand = new RelayCommand(() => _videoSearchPresenter.GetOwnPlayList(), () => true);
         }
 
         public void ClickTask()
@@ -91,6 +95,11 @@ namespace YoutubeApplication
 
 
             this.TotalItemsCount = searchVideoDTOs.Count;
+        }
+
+        public void RenderOwnPlayList(List<PlayListDTO> playListDTOs)
+        {
+            this.PlayListDTOs = new ObservableCollection<PlayListDTO>(playListDTOs);
         }
     }
 }

@@ -16,11 +16,14 @@ namespace YoutubeApplication.Contract
             Task VideoSearch(string query, string publishedAfter, string videoDuration = "any", string searchType = "any", string VideoDefinition = "any", string VideoType = "any");
             Task<ResponseResult<GetVideoInfo>> VideoInfoSeardh(string id);
             Task<ResponseResult<GetChannelsInfo>> ChannelInfoSearch(string id);
+            Task GetOwnPlayList();
+            Task AddVideoItemPlayList(string playlistId, string videoId);
         }
 
         internal interface IVideoSearchView
         {
             void RenderVideoSearch(List<SearchVideoDTO> searchVideoDTOs);
+            void RenderOwnPlayList(List<PlayListDTO> playListDTOs);
         }
     }
 }
