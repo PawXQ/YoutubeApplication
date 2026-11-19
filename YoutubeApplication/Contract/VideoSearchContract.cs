@@ -17,7 +17,6 @@ namespace YoutubeApplication.Contract
             Task<ResponseResult<GetVideoInfo>> VideoInfoSeardh(string id);
             Task<ResponseResult<GetChannelsInfo>> ChannelInfoSearch(string id);
             Task GetOwnPlayList();
-            Task AddVideoItemPlayList(string playlistId, string videoId);
         }
 
         internal interface IVideoSearchView

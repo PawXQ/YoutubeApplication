@@ -27,7 +27,6 @@ namespace YoutubeApplication
         public ICommand GetConfirmFilterCommand { get; set; }
         public ICommand SelectedPageTitleCommand { get; set; }
         public ICommand GetPlayListsCommand { get; set; }
-        public ICommand AddVideoItemPlayListCommand { get; set; }
 
         public string QueryText { get; set; }
 

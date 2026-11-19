@@ -401,7 +401,7 @@
                     <!--  單一影片卡片  -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource VideoCard}">
+                            <Border x:Name="VideoCard" Style="{StaticResource VideoCard}">
                                 <StackPanel>
 
                                     <!--  縮圖 + 右下角時長標籤  -->
@@ -593,6 +593,8 @@
                                                                             <Button
                                                                                 Grid.Column="2"
                                                                                 Margin="8,0,4,0"
+                                                                                Command="{Binding DataContext.AddVideoItemPlayListCommand, ElementName=VideoCard}"
+                                                                                CommandParameter="{Binding}"
                                                                                 Content="Add"
                                                                                 Style="{StaticResource CompactPrimaryButton}" />
                                                                             <Button

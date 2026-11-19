@@ -58,6 +58,7 @@ namespace YoutubeApplication.Presenter
                 SearchVideoDTO searchVideoDTO = new SearchVideoDTO();
 
                 searchVideoDTO.title = item.snippet.title;
+                searchVideoDTO.videoId = item.id.videoId;
                 searchVideoDTO.channelTitle = item.snippet.channelTitle;
                 searchVideoDTO.publishedAt = item.snippet.publishedAt.ToString();
                 searchVideoDTO.videoThumbnails = item.snippet.thumbnails.medium.url;
