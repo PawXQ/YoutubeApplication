@@ -22,5 +22,26 @@ namespace YoutubeApplication.Presenter
         {
             return youtubeContext.PlayListItem.AddVideoItemAsync(playlistId, videoId); ;
         }
+
+        public Task<ResponseResult<GetPlayListVideoItemsInfo>> GetPlayListVideoItemInfo(string playlistId)
+        {
+            return youtubeContext.PlayListItem.GetPlayListVideoItemInfoAsync(playlistId);
+        }
+
+        public Task DeleteVideoFromPlayList(string id)
+        {
+            return youtubeContext.PlayListItem.DeleteVideoItemAsync(id);
+        }
+
+        public async void RemoveVideoFromPlayList(string playlistId, string videoId)
+        {
+            ResponseResult<GetPlayListVideoItemsInfo> playListVodeoItemsInfo = await GetPlayListVideoItemInfo(playlistId);
+
+            List<string> strings = playListVodeoItemsInfo.Data.items.Select(x => x.snippet.resourceId.videoId).ToList();
+
+            string playListVideoItemId = playListVodeoItemsInfo.Data.items.FirstOrDefault(x => x.snippet.resourceId.videoId == videoId)?.id;
+
+            if (playListVideoItemId != null) await DeleteVideoFromPlayList(playListVideoItemId);
+        }
     }
 }

@@ -25,12 +25,18 @@ namespace YoutubeApplication.Models
         public string duration { get; set; }
 
         public ICommand AddVideoItemPlayListCommand { get; set; }
+        public ICommand RemoveVideoItemPlayListCommand { get; set; }
 
         public SearchVideoDTO()
         {
             AddVideoItemPlayListCommand = new RelayCommand<PlayListDTO>(playList =>
             {
                 _playListItemPresenter.AddVideoToPlayList(playList.PlaylistId, this.videoId);
+            }, (x) => true);
+
+            RemoveVideoItemPlayListCommand = new RelayCommand<PlayListDTO>(playList =>
+            {
+                _playListItemPresenter.RemoveVideoFromPlayList(playList.PlaylistId, this.videoId);
             }, (x) => true);
         }
     }

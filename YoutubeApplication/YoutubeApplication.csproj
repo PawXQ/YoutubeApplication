@@ -86,6 +86,7 @@
     <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Models\PageIndexItem.cs" />
     <Compile Include="Models\PlayListDTO.cs" />
+    <Compile Include="Models\PlayListVideoItemDTO.cs" />
     <Compile Include="Models\SearchFilter.cs" />
     <Compile Include="Models\SearchVideoDTO.cs" />
     <Compile Include="Presenter\PlayListItemPresenter.cs" />

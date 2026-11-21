@@ -13,6 +13,9 @@ namespace YoutubeApplication.Contract
         internal interface IPlayListItemPresenter
         {
             Task<ResponseResult<AddVideoItem>> AddVideoToPlayList(string playlistId, string videoId);
+            Task<ResponseResult<GetPlayListVideoItemsInfo>> GetPlayListVideoItemInfo(string playlistId);
+            Task DeleteVideoFromPlayList(string id);
+            void RemoveVideoFromPlayList(string playlistId, string videoId);
         }
     }
 }

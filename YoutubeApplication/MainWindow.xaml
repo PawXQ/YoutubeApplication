@@ -599,6 +599,8 @@
                                                                                 Style="{StaticResource CompactPrimaryButton}" />
                                                                             <Button
                                                                                 Grid.Column="3"
+                                                                                Command="{Binding DataContext.RemoveVideoItemPlayListCommand, ElementName=VideoCard}"
+                                                                                CommandParameter="{Binding}"
                                                                                 Content="Delete"
                                                                                 Style="{StaticResource CompactDangerButton}" />
                                                                         </Grid>
