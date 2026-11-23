@@ -81,6 +81,9 @@
     <Compile Include="Components\PaginationComponent\PaginationContext.cs" />
     <Compile Include="Components\PaginationComponent\PaginationContract.cs" />
     <Compile Include="Components\PaginationComponent\PaginationPresenter.cs" />
+    <Compile Include="Components\PlayListForAddVideoItem\PlayListForAddVideoItem.xaml.cs">
+      <DependentUpon>PlayListForAddVideoItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Contract\PlayListItemContract.cs" />
     <Compile Include="Contract\VideoSearchContract.cs" />
     <Compile Include="Models\OptionItem.cs" />
@@ -99,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\PaginationComponent\Pagination.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\PlayListForAddVideoItem\PlayListForAddVideoItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
