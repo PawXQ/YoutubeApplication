@@ -1,0 +1,388 @@
+﻿<Page
+    x:Class="YoutubeApplication.Pages.VideoSearchPage.VideoSearch"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:YoutubeApplication.ValueConverter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:filter="clr-namespace:YoutubeApplication.Components.FilterComponent"
+    xmlns:local="clr-namespace:YoutubeApplication.Pages.VideoSearchPage"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pagination="clr-namespace:YoutubeApplication.Components.PaginationComponent"
+    xmlns:playListForAddVideoItem="clr-namespace:YoutubeApplication.Components.PlayListForAddVideoItem"
+    Title="VideoSearch"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:TimeDurationConverter x:Key="TimeDurationConverter" />
+        <converter:PublishedAtConverter x:Key="PublishedAtConverter" />
+
+        <!--  標題列視窗控制按鈕  -->
+        <Style x:Key="TitleBarButton" TargetType="Button">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#26FFFFFF" />
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#38FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="TitleBarCloseButton"
+            BasedOn="{StaticResource TitleBarButton}"
+            TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#C42B1C" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#A32316" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  影片卡片：黑灰金屬面板，滑過時亮銀邊框 + 光暈  -->
+        <Style x:Key="VideoCard" TargetType="Border">
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Margin" Value="8,0,8,16" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PanelRaisedBrush}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderBrush}" />
+                    <Setter Property="Effect" Value="{StaticResource HoverGlowSoft}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Page.Resources>
+
+
+    <Grid>
+        <!--  ============ 背景：微弱金屬光澤網格 ============  -->
+        <Rectangle IsHitTestVisible="False">
+            <Rectangle.Fill>
+                <DrawingBrush
+                    TileMode="Tile"
+                    Viewport="0,0,36,36"
+                    ViewportUnits="Absolute">
+                    <DrawingBrush.Drawing>
+                        <GeometryDrawing Geometry="M0,0 L36,0 M0,0 L0,36">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="#06FFFFFF" Thickness="1" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                            <Setter Property="Margin" Value="7" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <!--  ============ 頂部導覽列（黑灰金屬 Banner）============  -->
+            <Border
+                Grid.Row="1"
+                Padding="20,10"
+                Background="{StaticResource BannerBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="5*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Logo + 麵包屑  -->
+                    <StackPanel
+                        Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Border
+                            Width="26"
+                            Height="26"
+                            Background="{StaticResource PrimaryBrush}"
+                            CornerRadius="6">
+                            <Path
+                                Margin="2,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M0,0 L8,5 L0,10 Z"
+                                Fill="{StaticResource TextDarkBrush}" />
+                        </Border>
+                        <TextBlock
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{StaticResource TextBrush}"
+                            Text="YouTube" />
+                        <TextBlock
+                            Margin="6,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{StaticResource TextDimBrush}"
+                            Text="/" />
+                        <TextBlock
+                            Margin="0,0,16,0"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Text="Search" />
+                    </StackPanel>
+
+                    <TextBox
+                        x:Name="SearchBox"
+                        Grid.Column="1"
+                        Margin="0,0,8,0"
+                        Style="{StaticResource SearchBox}"
+                        Text="{Binding QueryText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding ClickCommand}"
+                        CommandParameter="{Binding}"
+                        Content="Search"
+                        IsDefault="True"
+                        Style="{StaticResource PrimaryButton}" />
+
+                    <ToggleButton
+                        x:Name="FilterButton"
+                        Grid.Column="3"
+                        Margin="8,0,0,0"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MinimalToggleButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Margin="0,0,6,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="12"
+                                Text="&#xE71C;" />
+                            <TextBlock VerticalAlignment="Center" Text="Filter" />
+                        </StackPanel>
+                    </ToggleButton>
+                </Grid>
+            </Border>
+
+            <Popup
+                Grid.Row="2"
+                AllowsTransparency="True"
+                IsOpen="{Binding IsChecked, ElementName=FilterButton}"
+                Placement="Center"
+                PlacementTarget="{Binding ElementName=main}"
+                PopupAnimation="Fade"
+                StaysOpen="False">
+
+                <filter:Filter GetConfirmFilterCommand="{Binding DataContext.GetConfirmFilterCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+            </Popup>
+
+            <!--  ============ 影片清單 ============  -->
+            <ScrollViewer
+                Grid.Row="2"
+                Margin="16,20,16,0"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding RenderSearchVideos}">
+
+                    <!--  由左至右排列，空間不夠自動換行  -->
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <!--  單一影片卡片  -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="VideoCard" Style="{StaticResource VideoCard}">
+                                <StackPanel>
+
+                                    <!--  縮圖 + 右下角時長標籤  -->
+                                    <Grid Height="158">
+                                        <Rectangle RadiusX="6" RadiusY="6">
+                                            <Rectangle.Fill>
+                                                <ImageBrush ImageSource="{Binding videoThumbnails}" Stretch="UniformToFill" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+
+                                        <Border
+                                            Margin="0,0,6,6"
+                                            Padding="6,2"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Background="#D9121215"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4">
+                                            <TextBlock
+                                                FontFamily="Consolas"
+                                                FontSize="11"
+                                                Foreground="{StaticResource TextBrush}"
+                                                Text="{Binding duration, Converter={StaticResource TimeDurationConverter}}" />
+                                        </Border>
+                                    </Grid>
+
+                                    <!--  下方資訊列：左邊頭像，右邊文字  -->
+                                    <Grid Margin="2,10,2,2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--  頻道頭像  -->
+                                        <Ellipse
+                                            Grid.Column="0"
+                                            Width="32"
+                                            Height="32"
+                                            Margin="0,0,10,0"
+                                            VerticalAlignment="Top"
+                                            Stroke="{StaticResource BorderStrongBrush}"
+                                            StrokeThickness="1">
+                                            <Ellipse.Fill>
+                                                <ImageBrush ImageSource="{Binding channelThumbnails}" Stretch="UniformToFill" />
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+
+                                        <StackPanel Grid.Column="1">
+                                            <!--  標題（最多兩行）  -->
+                                            <TextBlock
+                                                MaxHeight="38"
+                                                FontSize="13"
+                                                FontWeight="SemiBold"
+                                                Foreground="{StaticResource TextBrush}"
+                                                Text="{Binding title}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="Wrap"
+                                                ToolTip="{Binding title}" />
+
+                                            <!--  頻道名稱  -->
+                                            <TextBlock
+                                                Margin="0,4,0,0"
+                                                FontSize="12"
+                                                Foreground="{StaticResource TextMutedBrush}"
+                                                Text="{Binding channelTitle}"
+                                                TextTrimming="CharacterEllipsis" />
+
+                                            <!--  觀看次數 • 上傳時間  -->
+                                            <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource TextDimBrush}"
+                                                    Text="{Binding viewCount}" />
+                                                <TextBlock
+                                                    Margin="4,0"
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource TextDimBrush}"
+                                                    Text="•" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    Foreground="{StaticResource TextDimBrush}"
+                                                    Text="{Binding publishedAt, Converter={StaticResource PublishedAtConverter}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!--  Add Playlist  -->
+                                        <ToggleButton
+                                            x:Name="AddPlayListButton"
+                                            Grid.Column="2"
+                                            Width="30"
+                                            Height="30"
+                                            Margin="6,0,0,0"
+                                            Padding="0"
+                                            VerticalAlignment="Top"
+                                            Command="{Binding DataContext.GetPlayListsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            Content="⋮"
+                                            FontSize="15"
+                                            Style="{StaticResource MinimalToggleButton}"
+                                            ToolTip="加入播放清單" />
+
+                                        <Popup
+                                            AllowsTransparency="True"
+                                            IsOpen="{Binding IsChecked, ElementName=AddPlayListButton}"
+                                            Placement="Right"
+                                            PlacementTarget="{Binding ElementName=AddPlayListButton}"
+                                            PopupAnimation="Fade"
+                                            StaysOpen="False">
+
+                                            <playListForAddVideoItem:PlayListForAddVideoItem AddVideoItemPlayListCommand="{Binding DataContext.AddVideoItemPlayListCommand, ElementName=VideoCard}" RemoveVideoItemPlayListCommand="{Binding DataContext.RemoveVideoItemPlayListCommand, ElementName=VideoCard}" />
+
+                                        </Popup>
+
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!--  ============ 分頁 ============  -->
+            <Grid Grid.Row="3" Margin="0,0,0,16">
+
+                <pagination:Pagination
+                    CountPerPage="{Binding DataContext.CountPerPage, RelativeSource={RelativeSource AncestorType=Page}}"
+                    SelectedPageTitleCommand="{Binding DataContext.SelectedPageTitleCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                    TotalItemsCount="{Binding DataContext.TotalItemsCount, RelativeSource={RelativeSource AncestorType=Page}}" />
+
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

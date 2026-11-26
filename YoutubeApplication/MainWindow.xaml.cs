@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YoutubeApplication.Utility;
+using NavigationService = YoutubeApplication.Utility.NavigationService;
 
 namespace YoutubeApplication
 {
@@ -23,7 +25,12 @@ namespace YoutubeApplication
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            //DataContext = new MainViewModel();
+
+            INavigationService navigationService = new NavigationService();
+            navigationService.SetFrame(frame);
+
+            DataContext = new MainViewModel(navigationService);
         }
 
         private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
